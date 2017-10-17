@@ -209,6 +209,15 @@ alias Latest='Sync_MASTERS;  SYNC;'
 # Checkout Master in every Repository under $ROOT
 alias MASTERS='At=`pwd`; root; cd src/node_modules; for repository in `ls`; do if [ -d "$repository" ]; then echo -e "\n\t\tCheckout Branch master in Repository : \t $repository\n"; cd $repository; Master; Back; fi; done; cd $At;'
 
+# Shows All Branches ( Selected is with * ) for every Repository under $DEV
+alias ShowAllBranches='At=`pwd`; dev; cd src/node_modules; for repository in `ls`; do if [ -d "$repository" ]; then cd $repository; echo -e "\t\t\t\t ***************** $repository ***************** \n"; Branch; Back; fi; done; cd $At'
+
+# Checkout Specified( Supplied Parameter, $1 ) in every Repository under $DEV if Branch is present
+alias CheckoutAll='function BHANSALI() { At=`pwd`; dev; cd src/node_modules; echo -e "\n\n"; for repository in `ls`; do if [ -d "$repository" ]; then cd $repository; echo -e "\t\t\t\t ***************** $repository ***************** \n"; checkIfBranch; Back; fi; done; cd $At; }; BHANSALI'
+
+# Being Used With 'CheckoutAll', Needs Improvement For Re-use Purpose
+alias checkIfBranch='for branch in `git branch | tr -s " " | cut -d" " -f2`; do if [ "$1" = "$branch" ]; then echo -e "\n\t\tChecking out Branch \"${1}\" in Repository : \t $repository\n"; Checkout $1; fi; done'
+
 # Rebase to Origin Master Branch
 alias Rebase='git rebase origin master;'
 
