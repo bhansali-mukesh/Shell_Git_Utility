@@ -209,10 +209,10 @@ alias Latest='Sync_MASTERS;  SYNC;'
 # Checkout Master in every Repository under $ROOT
 alias MASTERS='At=`pwd`; root; cd src/node_modules; for repository in `ls`; do if [ -d "$repository" ]; then echo -e "\n\t\tCheckout Branch master in Repository : \t $repository\n"; cd $repository; Master; Back; fi; done; cd $At;'
 
-# Shows All Branches ( Selected is with * ) for every Repository under $DEV
+# Shows All Branches ( Selected Branch is With * ) For Every Repository Under $DEV
 alias ShowAllBranches='At=`pwd`; dev; cd src/node_modules; for repository in `ls`; do if [ -d "$repository" ]; then cd $repository; echo -e "\t\t\t\t ***************** $repository ***************** \n"; Branch; Back; fi; done; cd $At'
 
-# Checkout Specified( Supplied Parameter, $1 ) in every Repository under $DEV if Branch is present
+# Checkout Specified Branch ( Supplied Parameter, $1 ) in Every Repository Under $DEV, If Branch is Present
 alias CheckoutAll='function BHANSALI() { At=`pwd`; dev; cd src/node_modules; echo -e "\n\n"; for repository in `ls`; do if [ -d "$repository" ]; then cd $repository; echo -e "\t\t\t\t ***************** $repository ***************** \n"; checkIfBranch; Back; fi; done; cd $At; }; BHANSALI'
 
 # Being Used With 'CheckoutAll', Needs Improvement For Re-use Purpose
