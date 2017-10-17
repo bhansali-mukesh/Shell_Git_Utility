@@ -11,4 +11,4 @@ Set-up and Usage :
   #3 Change Name and Workspace Direstories/Repositories, See Custom Section for more
   #4 Type "Help", It Will Show You Everything It Has
   #5 Type "Setup" or "Usage" for Help on Set-up and Usage
-  #6 You can also Add, Update aliases here, and If You Provides Proper Comments Above Your Commands, That Will Also Be Visible in Help
+  #6 You can also Add, Update aliases here, and If You Provides Proper Comments Above Your Commands, That Will Also Be Visible in Help.
