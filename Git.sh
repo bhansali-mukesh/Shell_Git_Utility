@@ -1,4 +1,5 @@
 
+# wget https://raw.githubusercontent.com/bhansali-mukesh/Git_Utility/master/Git.sh
 # Author : BHANSALI MUKESH KUMAR
 # This Utility Script provides many useful aliases and help to work with git
 
