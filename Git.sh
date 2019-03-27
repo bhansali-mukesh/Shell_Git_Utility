@@ -1,11 +1,10 @@
 
-# wget https://raw.githubusercontent.com/bhansali-mukesh/Git_Utility/master/Git.sh
 # Author : BHANSALI MUKESH KUMAR
 # This Utility Script provides many useful aliases and help to work with git
 
 # Step You May Follow for Usage 
 	#1 Save this file on your Computer ( $HOME/Git.sh, You may save at other location but that will lead to some other changes like, See custom and profile section for more )
-	#2 You May Move Entire "Profile Section" to your profile file ( .bash_profile or so ), Need to remove '#' for run command for this file, See profile section for more
+	#2 You May Move Entire "Profile Section" to your profile file ( .bash_profile or so ), Need to remove '#' to run command for this file, See profile section for more
 		# If You Don't Move "Profile Section" Then At Least You Need to Run This File to Use This Utitlity
 	#3 Change Name and Workspace Direstories/Repositories, See Custom Section for more
 	#4 Type "Help", It Will Show You Everything it Has
@@ -14,12 +13,34 @@
 alias Usage='Help Usage';
 
 # Another Name for Usage
-alias Setup='Usage';   
+alias Setup='Usage';
+
+###### {}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{ CUSTOM SECTION }{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{} ######
+
+# Defines Workspace Directory 
+export WORKSPACE="/opt/wnc"
+
+# Script File Name, I have Saved this file under this Path and Name
+# You May Vary But Then You May Need to Change It's Run Command in Profile file
+export FILENAME="$HOME/Git.sh"
+
+# PLEASE CHANGE BELOW AS PER YOUR NEED
+
+# Used for checking My Git Log, You Need to Put You Name in Git Log
+# Need to Change
+export NAME="Bhansali";
+
+# Remote Name for Git Repository
+export origin="origin"
+
+# Git Master Branch NAME
+export master="main"
+
 
 ###### %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% PROFILE SECTION %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% ######
 
 # This Section should be added in start-up profile file ( .bash_profile etc )
-# . ~/.Git.sh ( Remove '#' and add to profile, Run this file on login )
+# . ~/Git.sh ( Remove '#' and add to profile, Run this file on login )
 
 # Going back to the calling directory when things are done
 alias Back='cd - > /dev/null; echo -e "\a" ';
@@ -29,8 +50,12 @@ alias Back='cd - > /dev/null; echo -e "\a" ';
 # Clear Screen
 alias c=clear
 
-# Show Alias's Actual Command String
+# Show Alias of Alias For Ease of Typing
 alias a=alias
+
+# Goes to WorkSpace Directory
+alias Workspace="cd $WORKSPACE"
+
 
 ###### ------------------------------------------ HELP SECTION ------------------------------------------ ######
 
@@ -43,57 +68,48 @@ alias Help='function JASOL() { Document=`Help_Document`; if [ M"$1" = "M" ]; the
 # Generating Help Document from the Source on Runtime
 alias Help_Document='function MB() { Comment_Character="#"; Alias_Character="alias"; Help=""; Alias=""; while read line; do if [[ $line == $Comment_Character* ]]; then Help="$Help""\n""$line"; else Alias_Found=`echo "$line"| grep $Alias_Character`; if [[ M"$Alias_Found" != "M" ]]; then Alias=`echo "$line"| cut -d"=" -f1 | tr -s " "| cut -d" " -f2`; if [[ M"$Alias" != "M" ]]; then echo -e "\n$Alias" : "$Help"; Help=""; fi; else Help=""; fi; fi; done < "$FILENAME"; }; MB'
 
-###### {}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{ CUSTOM SECTION }{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{} ###### 
 
-# Script File Name, I have Saved this file under this Path and Name, you may vary But then will needs to run the Same from Profile file
-FILENAME="$HOME/Git.sh"
-
-# PLEASE CHANGE BELOW GIT AUTHOR NAME AND WORKSPACE
-
-#* Used for checking My Git Log, You Need to Put You Name in Git Log, Need to Change
-export NAME="Bhansali";
-
-#* Global Environment Variables, Change to your top level repository Path, Need to Change
-export ROOT=$HOME"/BHANSALI_WORKSPACE/product-root";
-
-# Some Repositories, you can define yours n number of repositories here
-export BASE=$ROOT"/src/product-base";
-export CORE=$ROOT"/src/product-core";
-export GRAPH=$ROOT"/src/prodcut-graphics";
 
 ###### ***************************************** GIT ALIASES ***************************************** ###### 
 
-# Set Alias "Git" to Open this File
-alias Git="vi $FILENAME";
+# Set Alias "Gitter" to Open this File
+# No Parameter
+alias Gitter="vi $FILENAME";
 
-# Default Repository where I work most of the time.
-export WORKSPACE="$BASE";
+# Open Git GUI
+# No Parameter
+alias Git="git gui"
 
-# Goes to Workspace Directory
-alias Workspace='cd $WORKSPACE';
+# Publish Git Commits to Gerrit
+# Optional Parameter
+alias Publish='function TAPRA() { echo -e "\n\t Do you want to \"Combine ( All Commits )\" first and Abort Publish Now ?\n"; read confirm; if [ $confirm == "Y" ]; then return; fi; git publish; }; TAPRA'
 
-# Goes to product-root ( Some Specific Repository )
-alias root="cd $ROOT";
+# Show Difference for Particular File
+# Need Parameter
+alias Diff="git diff"
 
-# Goes to product-base ( Some Specific Repository )
-alias base="cd $BASE";
-
-# Goes to product-core ( Some Specific Repository )
-alias core="cd $CORE";
-
-# Goes to product-graphics ( Some Specific Repository )
-alias g="cd $GRAPH";
-
-# npm sync in product-root ( Running some kind of sync, setup etc. after taking latest code )
-alias SYNC='root; npm run sync; Back';
+# Goes to Workspace, Pulls from Remote, Comes Back 
+alias Sync='Workspace; Pull; Back';
 
 # Shows All Branches in Repository
-alias Branch="git branch";
+# No Parameter
+alias Bbranch="git branch";
+
+# Rename a Branch
+# Need 2 Parameters (1. SourceName  2. NewName )
+alias Rename='function MARWAR() { git branch -fm $1 $2; }; MARWAR'
+		
+# Show All Branches ( including remote )
+# No Parameter
+alias All='git branch -a'
 
 # Shows current git branch
+# No Parameter
 alias Current='Branch| grep \* | cut -d" " -f2;'
 
 # Checkout to a git branch
+# Also Useful For Reverting Local Changes for a Particular File
+# Need Parameter
 alias Checkout='From=`Current`; git checkout'
 
 # Creates and checks out the same git branch
@@ -101,154 +117,208 @@ alias Checkout='From=`Current`; git checkout'
 # Example 
 #        Branch Name : NGCONT-1745_Infiniti-Create-new-homepage-outlines
 #        Just Fire Command : Create NGCONT-1745_Infiniti-Create-new-homepage-outlines
-# Now if I type "1745" on terminal Anytime, I am switched to this Branch        
-alias Create='function MBMB(){ story=`echo $1| cut -d'-' -f2`; jira=`echo $story| cut -d'_' -f1`; alias $jira="From=`Current`; git checkout $1"; git checkout -b $1; echo -e "\t\tType " \"$jira\" " to Jump to this Branch, Anytime"; };MBMB'
+# Now if I type "1745" on terminal Anytime, I am switched to this Branch
+# Need Parameter      
+alias Create='function MBMB(){ story=`echo $1| cut -d'_' -f1`; echo "alias $story=\"From=`Current`; git checkout $1 \"" >> $FILENAME; git checkout -b $1 $origin/$master; echo -e "\t\tType " \"$story\" " to Jump to this Branch, Anytime"; source $FILENAME; };MBMB'
 
 # Goes to PREVIOUS git branch
+# No Parameter
 alias Previous='Present=$From; Checkout $Present';
 
-# Goes to Master Branch
-alias Master='Checkout master';
+# Goes to Master/Main Branch
+# No Parameter
+alias Master='Checkout $master';
 
-# Pulls origin Master ( Merge Latest From Master Branch )
-alias Origin='git pull origin master';
+# Pulls origin Master/Main ( Merge Latest From Master Branch )
+# No Parameter
+alias Origin='git pull $remote $master';
 
 # Remove git branch
+# Need Parameter
 alias Remove="git branch -D";
 
 # Deletes the branch you are currently on
+# Need Confirmation
 alias Delete='Me=`Current`; echo press Y to delete branch \"$Me\"; read confirm; if [ $confirm == "Y" ]; then Master; Remove $Me; else echo Action Cancelled; fi;'
 
 # Adds files to Commit
+# Need Parameter(s)
 alias Add='git add';
 
-#Commits Added File in Branch for Permanent Changes
+# Commits Added File in Branch for Permanent Changes
+# Need Message Parameter 
 alias Commit='git commit -m';
 
+# Amends Last Commit in Branch for Permanent Changes
+# Need Message Parameter
+alias Aamend='git commit --amend -m'
+
+# Combine Multiple Commits in one
+# Need 2 Parameters ( 1. Number of Commits, 2. Commit Message )
+alias Combine='function JODHPUR() { if [ "$#" -lt 2 ]; then echo -e "\n\t Please Provide 2 parameters.\n\t 1. Number Of Commits to be Combined.\n\t 2. Commit Message.\n"; return; fi; git reset --soft HEAD~$1; git commit -m "$2"; }; JODHPUR'
+		
 # Push Current Branch
+# No Parameter
 alias Push='me=`Current`; git push --set-upstream origin $me'
 
 # It Needs "Commit Message" in double quotes as Parameter.
 # Add, Commit and Push in 1 Shot ( Makes Our Branch Available in Remote Server, Also Used in Recovery, Share and Review Changes )
-alias Stage='function MKBJ(){ modified=`?|grep "modified"| wc -l`; echo $modified; if [ "$modified" -eq 0 ]; then echo -e "\nNo Changes to Stage\n"; return; fi; echo -e "Following Files are Modified.\n"; ?| grep "modified"; echo -e "Press Y to Stage All\n"; read confirm; if [ $confirm == "Y" ]; then Add .; Commit "$1"; Push; else echo -e "Action Cancelled \n"; fi;}; MKBJ'
+# Need Confirmation and Commit Message
+alias Stage='function MKBJ(){ if [ "$1"B == "B" ]; then echo -e "\n\tPlease Provide Commit Message\n"; return; fi; modified=`?|grep "modified"| wc -l`; untracked=`git ls-files . --exclude-standard --others|wc -l`; deleted=`?| grep deleted| wc -l`; changes=`expr $modified + $untracked + $deleted`; if [ "$changes" -eq 0 ]; then echo -e "\n\tNo Changes to Stage\n"; return; fi; echo -e "\n\t$changes file(s) are identified to Stage\n"; ?| grep "modified"; git ls-files . --exclude-standard --others; ?| grep deleted; echo -e "\n\tPress Y to Stage All\n"; read confirm; if [ $confirm == "Y" ]; then Add .; Commit "$1";  else echo -e "Action Cancelled \n"; fi;}; MKBJ'
+
+# It Needs "Commit Message" in double quotes as Parameter.
+# Add, Commit and Push in 1 Shot ( Makes Our Branch Available in Remote Server, Also Used in Recovery, Share and Review Changes )
+# Need Confirmation and Commit Message
+alias Amend='function VIMLESH(){ if [ "$1"B == "B" ]; then echo -e "\n\tPlease Provide Commit Message\n"; return; fi; modified=`?|grep "modified"| wc -l`; untracked=`git ls-files . --exclude-standard --others|wc -l`; deleted=`?| grep deleted| wc -l`; changes=`expr $modified + $untracked + $deleted`; if [ "$changes" -eq 0 ]; then echo -e "\n\tNo Changes to Stage\n"; return; fi; echo -e "\n\t$changes file(s) are identified to Stage\n"; ?| grep "modified"; git ls-files . --exclude-standard --others; ?| grep deleted; echo -e "\n\tPress Y to Stage All\n"; read confirm; if [ $confirm == "Y" ]; then Add .; Aamend "$1";  else echo -e "Action Cancelled \n"; fi;}; VIMLESH'
+
 
 # Briefs for all current local git branches
-alias Last='git branch -vv';
+# No Parameter
+alias Branch='git branch -vv';
 
 # Fetches Remote Branch into your Local But DO NOT Merge Changes into Your Local Branch.
+# No Parameter
 alias Ffetch='git fetch';
 
 # Before fetching, remove any remote-tracking references that no longer exist on the remote ( Recommended )
+# Need Parameter
 alias Fetch='git fetch --prune';
 
 # Merges Changes into Branch
-alias Merge='git Merge';
+# Need Parameter
+alias Merge='git merge';
 
 # Fetches Remote Branch into your Local and Merges Changes into Your Local Branch ( Fetch + Merge ) .
+# No Parameter
 alias Pull='git pull';
 
-# Gives List of All Modified Files
-alias ?='git status';
+# Gives List of All Modified Files only ( File Should be in Remote Repository )
+# No Parameter
+alias M='git status | grep modified';
+
+# Gives List of All Local Changes ( Whether it is not in Remote Repository )
+# No Parameter
+alias ?="git status"
 
 # Delete All Local git branches except Master
-alias Delete_But='Master; git branch | tr -s " "| cut -d" " -f2 | grep -v master | xargs git branch -d;'
+# No Parameter
+alias Delete_But='Master; git branch | tr -s " "| cut -d" " -f2 | grep -v $master | xargs git branch -d;'
 
-# Saves Change Point to Rollback in Future, If Needed
+# List all the Stashes
+# No Parameter
+alias List="git stash list"
+
+# Apply a Stash Number
+# Need Parameter
+alias Apply='function BHANSALI() { git stash apply stash@{$1}; }; BHANSALI'
+
+# Remove a Stash From Stash List
+# Need Parameter
+alias Drop='function BHANSALI() { git stash drop stash@{$1}; }; BHANSALI'
+
+# Saves Change Point to Rollback in Future
+# No Parameter
 alias Sstash='git stash';
 
-# Adds Modified Files and Saves in Stash List
-alias Shelve='Add .; shelved=`Sstash | grep "Saved working directory"`'
-
-# Takes Branch to The Latest Saved Stage
-alias UnShelve='if [ M"$shelved" != "M" ]; then Pop; fi'
+# Saves Change Point with Name to Rollback in Future, If Needed ( Needs a Parameter, Checkpoint Name )
+# No Parameter
+alias Ssave='BranchName=`Current`; git stash save $BranchName'
 
 # Goes to Latest Saved Change Point
+# No Parameter
 alias Pop='Sstash pop';
 
-# Switch to Master Branch if not on Master
-alias Switch='this=`Current`; if [ $this != 'master' ]; then Shelve; Master; fi'
-
-# Switch Back to the Origin Branch and Goes to the Saved Changes Point
-alias Switch_Back='if [ $this != 'master' ]; then Previous; UnShelve; fi';
-
 # Clean UnTracked Files and Directories
+# No Parameter
 alias Clean='git clean -fdx';
-
-# Resets given File ( As Argument )
-alias Rreset='git reset'
-
-# Resets All Files ( dot denotes All )
-alias Reset='git reset .;'
 
 # Stash Changes including untracked file ( -u )
 # Untracked files are the Files which are not in remote repositories ( Newly Added Files ) etc.
 # Undo local changes
-alias Save_Clean='git stash -u';
+# No Parameter
+alias Save='BranchName=`Current`; git stash save -u $BranchName';
+
+# Un Stage given File ( Changes will remain but it will be removed from added files )
+# Need Parameter(s)
+alias Rreset='git reset'
+
+# Un Stage given File ( Changes will remain but it will be removed from added files )
+# No Parameter
+alias RRESET='git reset .'
+
+# Un Stage an un-committed File and Undo Changes from that file
+# Need Parameter(s)
+alias Reset='function MUKESH() { Rreset $1; Checkout $1; }; MUKESH'
+
+# Un Stage all un-committed Files and Undo Changes
+# No Parameter
+alias RESET='RRESET; Checkout .'
 
 # Revert Code to Origin Master
-alias Revert='Fetch; git reset --hard origin/master; Clean'
+# No Parameter
+alias Hard_Reset='Fetch; git reset --hard origin/main; Clean'
 
-# Fetches Remote Branch and Merge it into Local Brach ( Pull ) and Downloads Dependencies ( SYNC ) 
-alias update='Pull; SYNC'
+		# Rebase to Origin Master Branch
+		# No Parameter
+		alias Rebase='git rebase $origin $master;'
+		
+# Abort Rebase Operation
+# No Parameter
+alias Abort_Rebase='git rebase --abort'
+		
+# Rewrite Commit History, To Undo Commit, Edit Message and More
+# Need Parameter ( Go How Many Commits Behind, To Rewrite History )
+alias Rewrite='function OK() { head=""; commits=$1; commit=0; while [ $commit -lt $commits ]; do head="$head"^; commit=`expr $commit + 1`; done; git rebase -i HEAD$head ; }; OK'
 
-# Takes Pull in all Repositories.
-alias UPDATE='At=`pwd`; root; cd src/node_modules; for repository in `ls`; do if [ -d "$repository" ]; then cd $repository; Switch; Pull; Switch_Back; Back; fi; done; cd $At'
+# DANGEROUS COMMAND : One Should Not Use it on Public/Remote Repositories
+# Rollback Commits, You May Lose Changes done in Last Specified Number of Commits which you Specifies
+# It is What is Expected from this Command to Rollback Some Commits.
+# You Need to Specify, How Many Commits Needs to be Rolled Back as Parameter
+# Need Parameter ( Go How Many Commits Needs to be Rolled Back )
+alias ROLLBACK='function OK() { head=""; commits=$1; commit=0; while [ $commit -lt $commits ]; do head="$head"^; commit=`expr $commit + 1`; done; git reset --hard HEAD$head ; }; OK'
 
-# Takes Pull in all Repositories and Downloads Dependencies.
-# It Help Sometime Resolving Server Start-up issue
-alias Update_Sync='UPDATE; SYNC'
-
-# Checkout Master and Take Latest from Remote
-alias sync_master='Switch; Save_Clean; Revert; Switch_Back'
-
-# Get Latest of master Branch in all Repositories
-alias Sync_MASTERS='At=`pwd`; root; cd src/node_modules; for repository in `ls`; do if [ -d "$repository" ]; then echo -e "\n\t\tUpdating master branch in Repository : \t $repository\n"; cd $repository; sync_master; Back; fi; done; cd $At'
-
-# Checkout Master and Take Latest for all Repositories under $ROOT
-alias Latest='Sync_MASTERS;  SYNC;'
-
-# Checkout Master in every Repository under $ROOT
-alias MASTERS='At=`pwd`; root; cd src/node_modules; for repository in `ls`; do if [ -d "$repository" ]; then echo -e "\n\t\tCheckout Branch master in Repository : \t $repository\n"; cd $repository; Master; Back; fi; done; cd $At;'
-
-# Shows All Branches ( Selected Branch is With * ) For Every Repository Under $DEV
-alias ShowAllBranches='At=`pwd`; dev; cd src/node_modules; for repository in `ls`; do if [ -d "$repository" ]; then cd $repository; echo -e "\t\t\t\t ***************** $repository ***************** \n"; Branch; Back; fi; done; cd $At'
-
-# Checkout Specified Branch ( Supplied Parameter, $1 ) in Every Repository Under $DEV, If Branch is Present
-alias CheckoutAll='function BHANSALI() { At=`pwd`; dev; cd src/node_modules; echo -e "\n\n"; for repository in `ls`; do if [ -d "$repository" ]; then cd $repository; echo -e "\t\t\t\t ***************** $repository ***************** \n"; checkIfBranch; Back; fi; done; cd $At; }; BHANSALI'
-
-# Being Used With 'CheckoutAll', Needs Improvement For Re-use Purpose
-alias checkIfBranch='for branch in `git branch | tr -s " " | cut -d" " -f2`; do if [ "$1" = "$branch" ]; then echo -e "\n\t\tChecking out Branch \"${1}\" in Repository : \t $repository\n"; Checkout $1; fi; done'
-
-# Rebase to Origin Master Branch
-alias Rebase='git rebase origin master;'
+# Link Missing Jars
+# No Parameter
+alias Link='git phat init; git phat link'
 
 # Git Log
+# No Parameter
 alias Log='git log';
 
 # Shows git logs related to YOU only ( Filtered Logs )
-alias My='Workspace; git log --author $NAME; Back;'
+# No Parameter
+alias My='git log --author $NAME; Back'
 
 # git Logs for specific Author
+# Need Parameter
 alias Author='git log --author';
 
 # git logs since $date
+# Need Date Parameter
 alias Since='git log --since';
 
 # git Logs for TODAY's changes
+# No Parameter
 alias Today='date +%F| xargs git log --since';
 
 # git Logs for Changes Since YESTERDAY
+# No Parameter
 alias Yesterday='date -v-1d +%F| xargs git log --since';
 
 # Set up product-root environment
-alias SETUP_ROOT='git clone http://'"$USER"'@stash.cdk.com/scm/bhansali/product-root.git; npm run setup';
+#alias SETUP_ROOT='git clone http://'"$USER"'@stash.cdk.com/scm/bhansali/product-root.git; npm run setup';
 
-# Set up Specific Repository ( Needs ${repository_name} as Argument)
-alias CLONE='root; npm run clone -- '
-
-# Needs a Parameter ( Commit Id ) to Revert 
-alias Git_Revert='git revert';
+# Set up Repositories
+# No Parameter
+alias CLONE='function KUMAR() { Workspace; cd ..; remotes=`git remote show`; for remote in $remotes; do echo "Cloning $remote ..."; remote_url=`git remote show $remote | grep -im1 URL | rev | cut -d" " -f1| rev`; git clone $remote_url; done; }; KUMAR'
+	
+# Creates a New Commit which will nullify the effect of Last Commit
+# No Parameter
+alias Revert_Last_Commit='Last_Commit=`git log | head -n 1 | cut -d" " -f2`; git revert $Last_Commit';
 
 # In case if you change your password and git doesn't know it
 # Erase git cached Password ( Press Enter Twice )
+# No Parameter
 alias Git_Erase_Password='git credential-osxkeychain erase';
+
+# Your Local Git Branch's Aliases Goes Here
