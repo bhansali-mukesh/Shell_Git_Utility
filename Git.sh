@@ -137,7 +137,7 @@ alias Checkout='From=`Current`; git checkout'
 #        Just Fire Command : Create NGCONT-1745_Infiniti-Create-new-homepage-outlines
 # Now if I type "1745" on terminal Anytime, I am switched to this Branch
 # Need Parameter      
-alias Create='function MBMB(){ `Validator 1 "Need a Parameters ( Branch Name )" $@`; story=`echo $1| cut -d'_' -f1`; echo "alias $story=\"From=`Current`; git checkout $1 \"" >> $FILENAME; git checkout -b $1 $origin/$master; echo -e "\t\tType " \"$story\" " to Jump to this Branch, Anytime"; source $FILENAME; };MBMB'
+alias Create='function MBMB(){ Workspace; `Validator 1 "Need a Parameters ( Branch Name )" $@`; story=`echo $1| cut -d'_' -f1`; echo "alias $story=\"From=`Current`; git checkout $1 \"" >> $FILENAME; git checkout -b $1 $origin/$master; echo -e "\t\tType " \"$story\" " to Jump to this Branch, Anytime"; source $FILENAME; };MBMB'
 
 # Goes to PREVIOUS git branch
 # No Parameter
@@ -179,12 +179,18 @@ alias Commit='git commit -m';
 	# Aamend "Amending Changes to Improve Performance"
 alias Aamend='git commit --amend -m'
 
-# Combine Multiple Commits in one
+# Combine Multiple Commits
 # Need 2 Parameters ( 1. Number of Commits, 2. Commit Message )
 # Example
 	# Combine 4 "Combining 4 Commits into one Single Commit"
-alias Combine='function JODHPUR() { `Validator 2 "Need 2 Parameters ( 1. Number of Commits, 2. Commit Message )" $@`; if [ "$#" -lt 2 ]; then echo -e "\n\t Please Provide 2 parameters.\n\t 1. Number Of Commits to be Combined.\n\t 2. Commit Message.\n"; return; fi; git reset --soft HEAD~$1; git commit -m "$2"; }; JODHPUR'
-		
+alias Combine='function JODHPUR() { `Validator 2 "Need 2 Parameters ( 1. Number of Commits, 2. Commit Message )" $@`; git reset --soft HEAD~$1; git commit -m "$2"; }; JODHPUR'
+
+# Remove Commits From History, However Changes Stays in Work Directory
+# Need a Parameters ( Number of Commits )
+# Example
+	# UnCommit 3
+alias UnCommit='function ADI() { `Validator 1 "Need 1 Parameters ( Number of Commits )" $@`; git reset --soft HEAD~$1; }; ADI'
+
 # Push Current Branch
 # No Parameter
 alias Push='me=`Current`; git push --set-upstream origin $me'
@@ -231,7 +237,7 @@ alias Pull='Workspace; No_Changes=`Save|grep -i "No local changes"| wc -l`; Ppul
 
 # Gives List of All Modified Files only ( File Should be in Remote Repository )
 # No Parameter
-alias M='function Changes() { git status | grep -E "deleted|modified"; git ls-files . --exclude-standard --others; }; Changes';
+alias M='function Changes() { git status | grep -E "deleted|modified|new file"; git ls-files . --exclude-standard --others; }; Changes';
 
 # Gives List of All Local Changes ( Whether it is not in Remote Repository )
 # No Parameter
