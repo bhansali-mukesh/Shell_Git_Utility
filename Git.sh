@@ -101,9 +101,6 @@ alias Publish='function BHAWANA() { echo -e "\n\t Do You Want Publish Now ( Reco
 	# Diff README.html
 alias Diff="git diff"
 
-# Goes to Workspace, Pulls from Remote, Comes Back 
-alias Sync='Workspace; Pull; Back';
-
 # Shows All Branches in Repository
 # No Parameter
 alias Bbranch="git branch";
@@ -226,7 +223,11 @@ alias Merge='git merge';
 
 # Fetches Remote Branch into your Local and Merges Changes into Your Local Branch ( Fetch + Merge ) .
 # No Parameter
-alias Pull='git pull';
+alias Ppull='git pull';
+
+# Goes to Workspace, Pulls from Remote, Comes Back 
+# No Parameter
+alias Pull='Workspace; No_Changes=`Save|grep -i "No local changes"| wc -l`; Ppull; if [ $No_Changes -eq 0 ]; then Pop; fi; Back';
 
 # Gives List of All Modified Files only ( File Should be in Remote Repository )
 # No Parameter
@@ -296,9 +297,10 @@ alias Reset='function MUKESH() { `Validator 1 "Need a Parameters ( File Name )" 
 # No Parameter
 alias RESET='RRESET; Checkout .'
 
-# Revert Code to Origin Master
+# DANGEROUS COMMAND : You May Lose Your Changes
+# Revert Code to Origin Master/Main
 # No Parameter
-alias Hard_Reset='Fetch; git reset --hard $origin/$master; Clean'
+alias HARD_RESET='Fetch; git reset --hard $origin/$master; Clean'
 
 		# Rebase to Origin Master Branch
 		# No Parameter
