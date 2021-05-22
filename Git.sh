@@ -18,7 +18,7 @@ alias Setup='Usage';
 ###### {}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{ CUSTOM SECTION }{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{} ######
 
 # Defines Workspace Directory 
-export WORKSPACE="/opt/wnc"
+export WORKSPACE="/opt/repo"
 
 # Script File Name, I have Saved this file under this Path and Name
 # You May Vary But Then You May Need to Change It's Run Command in Profile file
@@ -94,8 +94,12 @@ alias Help_Document='function MB() { Comment_Character="#"; Alias_Character="ali
 
 # Set up Repositories
 # No Parameter
-alias CLONE='function KUMAR() { Workspace; cd ..; remotes=`git remote show`; for remote in $remotes; do echo "Cloning $remote ..."; remote_url=`git remote show $remote | grep -im1 URL | rev | cut -d" " -f1| rev`; git clone $remote_url; done; }; KUMAR'
+# Example git clone ssh://ssg-vayam.kvm.com:29418/rpeo
+alias CLONE='function KUMAR() { Workspace; remotes=`git remote show`; for remote in $remotes; do echo "Cloning $remote ..."; remote_url=`git remote show $remote | grep -im1 URL | rev | cut -d" " -f1| rev`; git clone $remote_url; Update_Remote; done; }; KUMAR'
 
+# Gets Updates in Remote Repositories ( Example : New Branch (repo.fox-cps05 ) is added in remote repository which is now know to local )
+# it checkout -b FOX_CPS05 --track origin/repo.fox-cps05
+alias Update_Remote='git remote update; git fetch';
 
 # Creates and checks out the same git branch
 # You can switch to your branch any time by just typing it's Jira id
@@ -104,7 +108,12 @@ alias CLONE='function KUMAR() { Workspace; cd ..; remotes=`git remote show`; for
 #        Just Fire Command : Create NGCONT-1745_Infiniti-Create-new-homepage-outlines
 # Now if I type "1745" on terminal Anytime, I am switched to this Branch
 # Need Parameter      
-alias Create='function MBMB(){ Workspace; `Validator 1 "Need a Parameters ( Branch Name )" $@`; story=`echo $1| cut -d'_' -f1`; echo "alias $story=\"From=`Current`; git checkout $1 \"" >> $FILENAME; git checkout -b $1 $origin/$master; echo -e "\t\tType " \"$story\" " to Jump to this Branch, Anytime"; source $FILENAME; };MBMB'
+alias Create='function MBMB(){ Workspace; `Validator 1 "Need a Parameters ( Branch Name )" $@`; story=`echo $1| cut -d'_' -f1`; echo "alias $story=\"From=`Current`; git checkout $1 \"" >> $FILENAME; git checkout -b $1 --track $origin/$master; echo -e "\t\tType " \"$story\" " to Jump to this Branch, Anytime"; source $FILENAME; };MBMB'
+
+
+# Git Repository Browser
+# No Parameter Needed
+alias Browse='gitk'
 
 # Shows All Branches in Repository
 # No Parameter
@@ -143,6 +152,9 @@ alias Previous='Present=$From; Checkout $Present';
 	# 2.	Checkout REAME.html
 alias Checkout='From=`Current`; git checkout'
 
+# Changes Branch Forcefully
+alias CHECKOUT='Checkout -f'
+
 # Goes to Master/Main Branch
 # No Parameter
 alias Master='Checkout $master';
@@ -163,7 +175,7 @@ alias ?="git status"
 
 # Gives List of All Modified Files only ( File Should be in Remote Repository )
 # No Parameter
-alias M='function Changes() { git status | grep -E "deleted|modified|new file"; git ls-files . --exclude-standard --others; }; Changes';
+alias M='function Changes() { git status | grep -E "deleted|modified|new file|renamed"; git ls-files . --exclude-standard --others; }; Changes';
 
 # Show Difference for Particular File
 # Need Parameter
@@ -255,7 +267,10 @@ alias Abort_Rebase='git rebase --abort'
 										
 # Link Missing Jars
 # No Parameter
-alias Link='git phat init; git phat link'
+alias Phat='git phat init; git phat link; git pull'
+
+# Links and then Pulls the Branch
+alias PULL="Phat"
 
 # Fetches Remote Branch into your Local But DO NOT Merge Changes into Your Local Branch.
 # No Parameter
@@ -269,13 +284,25 @@ alias Fetch='git fetch --prune';
 # Need Parameter
 alias Merge='git merge';
 
+# Opens Git UI for Resolving Conflicts
+alias Resolve='git mergetool'
+# Keep Mine Changes for Resolving Conflicts in Rebase/Merge/Pull
+# Warning : Keep Backup as Command WIll Over Write File
+# Need File Path as Parameter
+alias REPO="git checkout --our"
+
+# Keep Their Changes for Resolving Conflicts in Rebase/Merge/Pull
+# Warning : Keep Backup as Command WIll Over Write File
+# Need File Path as Parameter
+alias MINE="git checkout --their"
+
 # Fetches Remote Branch into your Local and Merges Changes into Your Local Branch ( Fetch + Merge ) .
 # No Parameter
 alias Ppull='git pull';
 
 # Goes to Workspace, Pulls from Remote, Comes Back 
 # No Parameter
-alias Pull='Workspace; No_Changes=`Save|grep -i "No local changes"| wc -l`; Ppull; if [ $No_Changes -eq 0 ]; then Pop; fi; Back';
+alias Pull='No_Changes=`Save|grep -i "No local changes"| wc -l`; Ppull; if [ $No_Changes -eq 0 ]; then Pop; fi; Back';
 
 
 											## Add Local Changes ( To Local Branch, Nothing to Remote Yet )
@@ -288,6 +315,12 @@ alias Git="git gui"
 # Example
 	# Add README.html
 alias Add='git add';
+
+# Adds jar files to Commit by git phat
+# Need one Parameter
+#Example
+	# ADD tools_vs/lib/SystemGeneration.jar
+alias ADD='function SULTAN() { `Validator 1 "Need 1 Parameter ( 1. Jar File Full Path Name )" $@`; git phat add "$1"; git phat push "$1"; }; SULTAN'
 
 # Un Adds files From Staging
 # Need Parameter(s)
@@ -335,9 +368,11 @@ alias Combine='function JODHPUR() { `Validator 2 "Need 2 Parameters ( 1. Number 
 
 
 											## Push Changes to Remote
-											
+
+# Drafts Git Commits to Remote
+alias Draft='git draft;'
+
 # Publish Git Commits to Remote
-# Optional Parameter
 alias Publish='function BHAWANA() { echo -e "\n\t Do You Want Publish Now ( Recommended to \"Combine ( All Commits )\" First, Ignore if Already Combined ) ?\n"; `Confirmer`; git publish; }; BHAWANA'
 
 # Push Current Branch to Remote
@@ -425,6 +460,20 @@ alias REWRITE='function OK() { `Validator 1 "Need a Parameters ( Number of Commi
 # No Parameter
 alias Git_Erase_Password='git credential-osxkeychain erase';
 
-		
-		
-		# Your Local Git Branch's Aliases Goes Here
+# Show Git Configuration
+alias Config='git config --list'
+
+# Shows List of Changed Files Between 2 Builds
+# Need 2 Parameters ( 1. Source Build Number, 2. Changed Build Number )
+# Example
+        # ChnageList git log --pretty="format:" --name-only REPO.IGUANA.00.00.190...REPO.IGUANA.00.00.198
+	alias ChangeList='function RAJASTHAN() { `Validator 2 "Need 2 Parameters ( 1. Source Build Number, 2. Changed Build Number )" $@`; git log --pretty="format:" --name-only REPO.IGUANA.00.00."$1"...REPO.IGUANA.00.00."$2"; }; RAJASTHAN'
+	
+
+	# Your Local Git Branch's Auto Generated Aliases Goes Here Automatically
+# Below are the Aliases to Jump from one Branch to Another
+alias 10205252="From=10153032_Add_Indicators; git checkout 10205252_Mark_Suspect "
+alias Fresh="From=10205252_Mark_Suspect; git checkout Fresh "
+alias Occurence="From=10205252_Mark_Suspect; git checkout Occurence "
+alias Setup="From=Occurence; git checkout Setup "
+alias 10152619="From=Occrrence_Test; git checkout 10152619_Verification "
