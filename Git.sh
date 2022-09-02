@@ -3,12 +3,12 @@
 # This Utility Script provides many useful aliases and help to work with git
 
 # Step You May Follow for Usage 
-	#1 Save this file on your Computer ( $HOME/Git.sh, You may save at other location but that will lead to some other changes like, See custom and profile section for more )
-	#2 You May Move Entire "Profile Section" to your profile file ( .bash_profile or so ), Need to remove '#' to run command for this file, See profile section for more
+	#1 Save this file on your Computer ( $HOME/Git.sh, You may save at other location but that will lead to some other changes, See custom and profile section for more )
+	#2 You May Move Entire "Profile Section" to your profile file ( .zprofile or so ), See profile section for more
 		# If You Don't Move "Profile Section" Then At Least You Need to Run This File to Use This Utitlity
-	#3 Change Name and Workspace Direstories/Repositories, See Custom Section for more
-	#4 Type "Help", It Will Show You Everything it Has
-	#5 Type "Usage" for Help on Set up and Usage
+	#3 Change Name and Workspace Directories/Repositories, See Custom Section for more
+	#4 Type "Help" ( Optionally with Regular Expression ), It Will Show You Everything it Has
+	#5 Type "Help Usage" for Help on Set up and Usage
 	#6 You can also Add, Update aliases here, and If You Provides Proper Comments Above Your Commands, That Will Also Be Visible in Help
 alias Usage='Help Usage';
 
@@ -18,7 +18,7 @@ alias Setup='Usage';
 ###### {}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{ CUSTOM SECTION }{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{}{} ######
 
 # Defines Workspace Directory 
-export WORKSPACE="/opt/repo"
+export WORKSPACE="~/Repositories/elasticsearch-service-console"
 
 # Script File Name, I have Saved this file under this Path and Name
 # You May Vary But Then You May Need to Change It's Run Command in Profile file
@@ -28,18 +28,18 @@ export FILENAME="$HOME/Git.sh"
 
 # Used for checking My Git Log, You Need to Put You Name in Git Log
 # Need to Change
-export NAME="Bhansali";
+export NAME="BHANSALI";
 
 # Remote Name for Git Repository
 export origin="origin"
 
 # Git Master Branch NAME
-export master="main"
+export master="master"
 
 
 ###### %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% PROFILE SECTION %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% ######
 
-# This Section should be added in start-up profile file ( .bash_profile etc )
+# This Section should be added in start-up profile file ( .zprofile etc )
 # . ~/Git.sh ( Remove '#' and add to profile, Run this file on login )
 
 # Going back to the calling directory when things are done
@@ -108,8 +108,24 @@ alias Update_Remote='git remote update; git fetch';
 #        Just Fire Command : Create NGCONT-1745_Infiniti-Create-new-homepage-outlines
 # Now if I type "1745" on terminal Anytime, I am switched to this Branch
 # Need Parameter      
-alias Create='function MBMB(){ Workspace; `Validator 1 "Need a Parameters ( Branch Name )" $@`; story=`echo $1| cut -d'_' -f1`; echo "alias $story=\"From=`Current`; git checkout $1 \"" >> $FILENAME; git checkout -b $1 --track $origin/$master; echo -e "\t\tType " \"$story\" " to Jump to this Branch, Anytime"; source $FILENAME; };MBMB'
+# alias Create='function MBMB(){ Workspace; `Validator 1 "Need a Parameters ( Branch Name )" $@`; story=`echo $1| cut -d'_' -f1`; echo "alias $story=\"From=`Current`; git checkout $1 \"" >> $FILENAME; git checkout -b $1 --track $origin/$master; echo -e "\t\tType " \"$story\" " to Jump to this Branch, Anytime"; source $FILENAME; };MBMB'
 
+# Creates a New Branch and Checks out the Same
+# You can switch to your branch any time by just typing it's Jira id
+# Need a Parameter
+# Example
+#        Branch Name : NGCONT-1745_Infiniti-Create-new-homepage-outlines
+#        Just Fire Command : New NGCONT-1745_Infiniti-Create-new-homepage-outlines
+# Now if I type "1745" on terminal Anytime, I am switched to this Branch
+alias New='function MBMB(){ `Validator 1 "Need a Parameters ( Branch Name )" $@`; story=`echo $1| cut -d'_' -f1`; echo "alias $story=\"From=`Current`;git checkout $1 \"" >> $FILENAME; Master; Fetch; git checkout -b $1 $origin/$master; echo -e "\t\tType " \"$story\" " to Jump to this Branch, Anytime"; source $FILENAME; };MBMB'
+
+# Downloads a Remote Branch into Local and Checks out the Same
+# You can switch to your branch any time by just typing it's Jira id
+# Need a Parameter
+# Example
+#        Branch Name : Update_User_Message_Branch
+#        Just Fire Command : Remote Update_User_Message_Branch
+alias Remote='function MBMB(){ `Validator 1 "Need 1 Parameter ( Remote Branch Name )" $@`; story=`echo $1| cut -d'_' -f1`; echo "alias $story=\"From=`Current`; git checkout $1 \"" >> $FILENAME; Master; Fetch; git checkout -b $1 origin/"$1"; echo git checkout -b $1 origin/"$1"; echo -e "\t\tType " \"$story\" " to Jump to this Branch, Anytime"; source $FILENAME; };MBMB'
 
 # Git Repository Browser
 # No Parameter Needed
@@ -171,7 +187,7 @@ alias Origin='git pull $origin $master';
 										
 # Gives List of All Local Changes ( Whether it is not in Remote Repository )
 # No Parameter
-alias ?="git status"
+alias S="git status"
 
 # Gives List of All Modified Files only ( File Should be in Remote Repository )
 # No Parameter
@@ -190,19 +206,15 @@ alias Diff="git diff"
 # No Parameter
 alias Sstash='git stash';
 
-# Saves Change Point to Rollback in Future
-# No Parameter
-alias Stash='git stash -u';
-
 # Saves Change Point with Name to Rollback in Future, If Needed ( Needs a Parameter, Checkpoint Name )
 # No Parameter
-alias Ssave='BranchName=`Current`; git stash save $BranchName'
+alias Stash='BranchName=`Current`; git stash push -u -m $BranchName'
 
 # Stash Changes including untracked file ( -u )
 # Untracked files are the Files which are not in remote repositories ( Newly Added Files ) etc.
 # Undo local changes
 # No Parameter
-alias Save='BranchName=`Current`; git stash save -u $BranchName';
+alias Save='BranchName=`Current`; git stash push -m $BranchName --patch';
 
 # List all the Stashes
 # No Parameter
@@ -224,43 +236,65 @@ alias Apply='function BHANSALI() { git stash apply stash@{$1}; }; BHANSALI'
 	# Drop 0
 alias Drop='function BHANSALI() { git stash drop stash@{$1}; }; BHANSALI'
 
+# Remove multiple Stash From Stash List With Given Word
+# Need Parameter
+# Example
+	# Drop_For ES-1298
+alias Drop_For='function BHASM() { `Validator 1 "Need a Parameters ( Search String )" $@`; dropped_stashes=0; for stash_index in `git stash list | grep "${1}" | cut -d: -f1 | cut -d{ -f2 | cut -d} -f1`; do echo; echo Found at index $stash_index; drop_index=$(($stash_index-$dropped_stashes)); dropped_stashes=$(($dropped_stashes+1)); echo Dropping...; git stash drop stash@{$drop_index}; done; echo; echo -e "\t\t DONE"; }; BHASM'
 
+# DANGEROUS COMMAND
+# Clears All Stash Entries 
+# Need No Parameter
+alias SCLEAR='git stash clear'
 										## Revert Changes
 										
 # Clean UnTracked Files and Directories
 # No Parameter
 alias Clean='git clean -fdx';
 
-# Un Stage given File ( Changes will remain but it will be removed from added files )
-# Need Parameter(s)
-alias Rreset='git reset'
-
-# Un Stage given File ( Changes will remain but it will be removed from added files )
-# No Parameter
-alias RRESET='git reset .'
+# Un Stage Changes ( Changes will remain but it will be removed from added files )
+# Optional Parameter
+#
+# 	If Parameter is Given, Will Unstage only those Changes
+#		Example :
+#			reset README.md
+#
+# 	Else Un Stage All Change
+#		Example :
+#			reset
+alias reset='git reset'
 
 # Un Stage an un-committed File and Undo Changes from that file
 # Need Parameter(s)
 # Example
 	# Reset Git.sh
-alias Reset='function MUKESH() { `Validator 1 "Need a Parameters ( File Name )" $@`; Rreset $1; Checkout $1; }; MUKESH'
+alias Reset='function MUKESH() { `Validator 1 "Need a Parameters ( File Name )" $@`; reset $1; Checkout $1; }; MUKESH'
 
+# DANGEROUS COMMAND
 # Un Stage all un-committed Files and Undo Changes
 # No Parameter
-alias RESET='RRESET; Checkout .'
+alias RESET='reset; Checkout .'
 
 # DANGEROUS COMMAND : You May Lose Your Changes
 # Revert Code to Origin Master/Main
 # No Parameter
 alias HARD_RESET='Fetch; git reset --hard $origin/$master; Clean; Pull'
 
-		# Rebase to Origin Master Branch
-		# No Parameter
-		alias Rebase='git rebase $origin $master;'
-		
+# Rebase to Origin Master Branch
+# No Parameter
+# alias Rebase='git rebase $origin $master;'
+
+# Rebase Current Branch from Latest Master
+# No Parameter
+alias Remaster='Master; git pull; Previous; BranchName=`Current`; git rebase -i origin/master $BranchName'
+
 # Abort Rebase Operation
 # No Parameter
-alias Abort_Rebase='git rebase --abort'
+alias RContinue='git rebase --continue'
+
+# Abort Rebase Operation
+# No Parameter
+alias RAbort='git rebase --abort'
 
 
 										## Get Changes From Remote Repository
@@ -274,11 +308,11 @@ alias PULL="Phat"
 
 # Fetches Remote Branch into your Local But DO NOT Merge Changes into Your Local Branch.
 # No Parameter
-alias Ffetch='git fetch';
+alias fetch='git fetch';
 
 # Before fetching, remove any remote-tracking references that no longer exist on the remote ( Recommended )
-# Need Parameter
-alias Fetch='git fetch --prune';
+# No Parameter
+alias Fetch='git fetch --prune'
 
 # Merges Changes into Branch
 # Need Parameter
@@ -286,15 +320,27 @@ alias Merge='git merge';
 
 # Opens Git UI for Resolving Conflicts
 alias Resolve='git mergetool'
-# Keep Mine Changes for Resolving Conflicts in Rebase/Merge/Pull
-# Warning : Keep Backup as Command WIll Over Write File
-# Need File Path as Parameter
-alias REPO="git checkout --our"
 
-# Keep Their Changes for Resolving Conflicts in Rebase/Merge/Pull
-# Warning : Keep Backup as Command WIll Over Write File
+# Keep Mine Changes for Resolving Conflicts in Rebase/Merge/Pull/Stash Apply
+# Warning : Keep Backup as Command Will Over Write File
 # Need File Path as Parameter
-alias MINE="git checkout --their"
+#	Example
+#		MINE Client.java	
+alias MINE="git checkout --our"
+
+# Keep Their Changes for Resolving Conflicts in Rebase/Merge/Pull/Stash Apply
+# Warning : Keep Backup as Command Will Over Write File
+# Need File Path as Parameter
+#	Example
+#		YOUR Client.java	
+alias YOUR="git checkout --their"
+
+# Select Change Portions Interactively for Resolving Conflicts in Rebase/Merge/Pull/Stash Apply
+# Warning : Keep Backup as Command Will Over Write File
+# Need File Path as Parameter
+#       Example
+#               Conflict Client.java
+# alias Conflict='git checkout --patch'
 
 # Fetches Remote Branch into your Local and Merges Changes into Your Local Branch ( Fetch + Merge ) .
 # No Parameter
@@ -302,7 +348,7 @@ alias Ppull='git pull';
 
 # Goes to Workspace, Pulls from Remote, Comes Back 
 # No Parameter
-alias Pull='No_Changes=`Save|grep -i "No local changes"| wc -l`; Ppull; if [ $No_Changes -eq 0 ]; then Pop; fi; Back';
+alias Pull='No_Changes=`Stash|grep -i "No local changes"| wc -l`; Ppull; if [ $No_Changes -eq 0 ]; then Pop; fi; Back';
 
 
 											## Add Local Changes ( To Local Branch, Nothing to Remote Yet )
@@ -310,6 +356,7 @@ alias Pull='No_Changes=`Save|grep -i "No local changes"| wc -l`; Ppull; if [ $No
 # Opens Git GUI
 # No Parameter
 alias Git="git gui"
+
 # Adds files to Commit
 # Need Parameter(s)
 # Example
@@ -318,15 +365,15 @@ alias Add='git add';
 
 # Adds jar files to Commit by git phat
 # Need one Parameter
-#Example
-	# ADD tools_vs/lib/SystemGeneration.jar
+# 	Example
+# 		ADD tools_vs/lib/SystemGeneration.jar
 alias ADD='function SULTAN() { `Validator 1 "Need 1 Parameter ( 1. Jar File Full Path Name )" $@`; git phat add "$1"; git phat push "$1"; }; SULTAN'
 
 # Un Adds files From Staging
 # Need Parameter(s)
 # Example
 	# UnAdd README.html
-alias UnAdd='Rreset';
+alias UnAdd='reset';
 
 # Commits Added File in Branch for Permanent Changes
 # Need Message Parameter
@@ -335,11 +382,12 @@ alias UnAdd='Rreset';
 alias Ccommit='git commit -m';
 
 # It Needs "Commit Message" in double quotes as Parameter.
+# Also Saves a Copy as Stash as Local Backup or Rollback Point as a Separate Commit ( When you Amend this Commit Later, Commit is overwritten but Stash is NOT )
 # Add, Commit and Push in 1 Shot ( Makes Our Branch Available in Remote Server, Also Used in Recovery, Share and Review Changes )
 # Need Confirmation and Commit Message
 # Example
 	# Commit "Issue Resolved"
-alias Commit='function MKBJ(){ `Validator 1 "Need a Parameters ( Commit Message )" $@`; changes=`M|wc -l`; if [ "$changes" -eq 0 ]; then echo -e "\n\tNo Changes to Stage\n"; return; fi; echo -e "\n\t$changes file(s) are identified to Stage\n"; M; `Confirmer`; Add .; Ccommit "$1";}; MKBJ'
+alias Commit='function MKBJ(){ `Validator 1 "Need a Parameters ( Commit Message )" $@`; changes=`M|wc -l`; if [ "$changes" -eq 0 ]; then echo -e "\n\t No New Changes Found.\n"; return; fi; echo -e "\n\t$changes file(s) identified.\n"; M; `Confirmer`; Stash; Apply 0; Add .; Ccommit "$1"; push; }; MKBJ'
 
 # Amends Last Commit in Branch for Permanent Changes
 # Need Message Parameter
@@ -347,18 +395,25 @@ alias Commit='function MKBJ(){ `Validator 1 "Need a Parameters ( Commit Message 
 	# Aamend "Amending Changes to Improve Performance"
 alias Aamend='git commit --amend -m'
 
-# It Needs "Commit Message" in double quotes as Parameter.
-# Add, Commit and Push in 1 Shot ( Makes Our Branch Available in Remote Server, Also Used in Recovery, Share and Review Changes )
-# Need Confirmation and Commit Message
+# Amends Last Commit in Branch for Permanent Changes
+# No Parameter
+alias amend='git commit --amend'
+
+# No Parameter Required
+# Save Copy as Stash For Recovery as Separate Commit/Rollback Point ( Because it is an Amend, It has previous Commit Changes as well but Stash has Exclusive Changes for this Amend )
+# Add, Amend Last Commit and Push in 1 Shot ( Makes Our Branch Available in Remote Server, Also Used in Recovery, Share and Review Changes )
+# Need Confirmation
 # Example
-	# Amend "Refactoring Done"
-alias Amend='function VIMLESH(){ `Validator 1 "Need a Parameters ( Commit Message )" $@`; changes=`M|wc -l`; if [ "$changes" -eq 0 ]; then echo -e "\n\tNo Changes to Stage\n"; return; fi; echo -e "\n\t$changes file(s) are identified to Stage\n"; M; `Confirmer`; Add .; Aamend "$1";}; VIMLESH'
+         # Amend
+alias Amend='function VIMLESH(){ changes=`M|wc -l`; if [ "$changes" -eq 0 ]; then echo -e "\n\t No New Changes Found\n"; return; fi; echo -e "\n\t$changes file(s) identified.\n"; M; `Confirmer`; Stash; Apply 0; Add .; amend; push; }; VIMLESH'
 
 # Remove Commits From History, However Changes Stays in Work Directory
-# Need a Parameters ( Number of Commits )
+# Need an Optional Parameters ( Number of Commits )
+# Consider 1 Commit, If Parameter is not Passed
 # Example
+	# UnCommit
 	# UnCommit 3
-alias UnCommit='function ADI() { `Validator 1 "Need 1 Parameters ( Number of Commits )" $@`; git reset --soft HEAD~$1; }; ADI'
+alias UnCommit='function ADI() { if [ J"$1" != "J" ]; then Numer_Of_Commits=$1; else Numer_Of_Commits=1; fi; git reset --soft HEAD~$Numer_Of_Commits; echo "Un Committed $Numer_Of_Commits Commits"; }; ADI'
 
 # Combine Multiple Commits
 # Need 2 Parameters ( 1. Number of Commits, 2. Commit Message )
@@ -373,13 +428,15 @@ alias Combine='function JODHPUR() { `Validator 2 "Need 2 Parameters ( 1. Number 
 alias Draft='git draft;'
 
 # Publish Git Commits to Remote
-alias Publish='function BHAWANA() { echo -e "\n\t Do You Want Publish Now ( Recommended to \"Combine ( All Commits )\" First, Ignore if Already Combined ) ?\n"; `Confirmer`; git publish; }; BHAWANA'
+alias Publish='function B() { echo -e "\n\t Do You Want Publish Now ( Recommended to \"Combine ( All Commits )\" First, Ignore if Already Combined ) ?\n"; `Confirmer`; git publish; }; B'
 
 # Push Current Branch to Remote
 # No Parameter
 alias Push='me=`Current`; git push --set-upstream origin $me'
 
-
+# FORCEFULLY Push Current Branch to Remote Without Verification
+# No Parameter
+alias PUSH='git push --no-verify -f'
 											## Delete Un Used Branches
 										
 # Remove git branch
@@ -415,6 +472,9 @@ alias Author='git log --author';
 
 # git logs since $date
 # Need Date Parameter
+# 	Example
+#		1.	Since "Thu May 18 14:51:20 IST 2022"
+#		2.	Since Yesterday
 alias Since='git log --since';
 
 # git Logs for TODAY's changes
@@ -429,13 +489,14 @@ alias Yesterday='git log --since=yesterday.midnight';
 
 										# ADVANCE Section
 
+# Creates a New Commit which is Opposite of Given Commit Id to Nullyfy It's Effect
 # Reverts Given (Id) Commit
 # Needs a Parameter ( Commit Id ) to Revert 
 alias REVERT='git revert';
 
 # Creates a New Commit which will nullify the effect of Last Commit
 # No Parameter
-alias Revert_Last_Commit='Last_Commit=`git log | head -n 1 | cut -d" " -f2`; git revert $Last_Commit';
+alias UNDO='Last_Commit=`git log | head -n 1 | cut -d" " -f2`; git revert $Last_Commit';
 
 # DANGEROUS COMMAND : One Should Not Use it on Public/Remote Repositories
 # Rollback Commits, You May Lose Changes done in Last Specified Number of Commits which you Specifies
@@ -467,13 +528,12 @@ alias Config='git config --list'
 # Need 2 Parameters ( 1. Source Build Number, 2. Changed Build Number )
 # Example
         # ChnageList git log --pretty="format:" --name-only REPO.IGUANA.00.00.190...REPO.IGUANA.00.00.198
-	alias ChangeList='function RAJASTHAN() { `Validator 2 "Need 2 Parameters ( 1. Source Build Number, 2. Changed Build Number )" $@`; git log --pretty="format:" --name-only REPO.IGUANA.00.00."$1"...REPO.IGUANA.00.00."$2"; }; RAJASTHAN'
+# alias ChangeList='function RAJASTHAN() { `Validator 2 "Need 2 Parameters ( 1. Source Build Number, 2. Changed Build Number )" $@`; git log --pretty="format:" --name-only REPO.IGUANA.00.00."$1"...REPO.IGUANA.00.00."$2"; }; RAJASTHAN'
 	
-
 	# Your Local Git Branch's Auto Generated Aliases Goes Here Automatically
 # Below are the Aliases to Jump from one Branch to Another
-alias 10205252="From=10153032_Add_Indicators; git checkout 10205252_Mark_Suspect "
-alias Fresh="From=10205252_Mark_Suspect; git checkout Fresh "
-alias Occurence="From=10205252_Mark_Suspect; git checkout Occurence "
-alias Setup="From=Occurence; git checkout Setup "
-alias 10152619="From=Occrrence_Test; git checkout 10152619_Verification "
+alias Rough="From=ES-1894_Delete_Cluster_Message;git checkout Rough "
+alias Hathi="From=Dummy;git checkout Hathi "
+alias NGCONT-1745="From=ES-1894_Delete_Cluster_Message;git checkout NGCONT-1745_Infiniti-Create-new-homepage-outlines "
+alias 2324="From=NGCONT-1745_Infiniti-Create-new-homepage-outlines;git checkout 2324_Fix_that_UI_Bug "
+alias ES-2453="From=2324_Fix_that_UI_Bug;git checkout ES-2453_Update_The_Message "
