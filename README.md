@@ -1,8 +1,8 @@
 Author : BHANSALI MUKESH KUMAR
 
 # Command to Download on non-windows System : wget https://raw.githubusercontent.com/bhansali-mukesh/Git_Utility/master/Git.sh
-# Git Command Line Utility
-A Shell Utility Which Provides Handy Aliases to Work With Git on Command Line. It doesn't works for windows.
+# Gingle Word Utility for Git Commands
+A Shell Utility Which Provides Handy Aliases to Work With Git on Command Line.
 
 Set-up and Usage :
 # Step You May Follow for Usage
