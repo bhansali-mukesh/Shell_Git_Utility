@@ -1,7 +1,7 @@
 Author : BHANSALI MUKESH KUMAR
 
-# Command to Download on non-windows System : wget https://raw.githubusercontent.com/bhansali-mukesh/Git_Utility/master/Git.sh
-# Gingle Word Utility for Git Commands
+### Command to Download on non-windows System : wget https://raw.githubusercontent.com/bhansali-mukesh/Git_Utility/master/Git.sh
+### Gingle Word Utility for Git Commands
 A Shell Utility Which Provides Handy Aliases to Work With Git on Command Line.
 
 Set-up and Usage :
